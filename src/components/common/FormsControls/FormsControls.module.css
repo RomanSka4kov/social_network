@@ -4,3 +4,8 @@
 .form_control.error span {
     color: #ff0000;
 }
+.formSummaryError {
+    border: 1px solid #ff0000;
+    padding: 5px;
+    color: #ff0000;
+}
