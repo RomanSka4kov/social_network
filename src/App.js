@@ -50,4 +50,16 @@ const mapStateToProps = (state) => ({
   initialized: state.app.initialized,
 });
 
-export default connect(mapStateToProps, {initializeApp})(App);
+let AppContainer = connect(mapStateToProps, {initializeApp})(App);
+
+const MainApp = (props) => {
+  return (
+    <BrowserRouter>
+        <Provider store={store}>
+          <AppContainer />
+        </Provider>
+    </BrowserRouter>
+  );
+}
+
+export default MainApp;
