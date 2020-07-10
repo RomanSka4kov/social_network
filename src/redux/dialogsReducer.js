@@ -1,4 +1,4 @@
-const SEND_MESSAGE = 'SEND-MESSAGE';
+const SEND_MESSAGE = 'dialog/SEND_MESSAGE';
 
 let initialState = {
     messagesData: [
