@@ -8,28 +8,31 @@ import Users from './Users';
 import Preloader from '../common/Preloader/Preloader';
 
 class UsersContainer extends React.Component {
-
     componentDidMount() {
-        this.props.requestUsers(this.props.currentPage, this.props.pageSize);
+        const {requestUsers, currentPage, pageSize} = this.props;
+        requestUsers(currentPage, pageSize);
         
     }
 
     onPageChanged = (pageNumber) => {
-        this.props.requestUsers(pageNumber, this.props.pageSize);
+        const {requestUsers, pageSize} = this.props
+        requestUsers(pageNumber, pageSize);
     }
 
     render() {
+        const {isFetching, totalUsersCount, pageSize,
+            currentPage, users, unfollow, follow, followingInProgress} = this.props;
         return <>
-            {this.props.isFetching ? <Preloader /> : null}
+            {isFetching ? <Preloader /> : null}
             <Users
-                totalUsersCount={this.props.totalUsersCount}
-                pageSize={this.props.pageSize}
-                currentPage={this.props.currentPage}
+                totalUsersCount={totalUsersCount}
+                pageSize={pageSize}
+                currentPage={currentPage}
                 onPageChanged={this.onPageChanged}
-                users={this.props.users}
-                unfollow={this.props.unfollow}
-                follow={this.props.follow}
-                followingInProgress={this.props.followingInProgress} />
+                users={users}
+                unfollow={unfollow}
+                follow={follow}
+                followingInProgress={followingInProgress} />
         </>
 
     }

@@ -1,26 +1,21 @@
 import React from 'react';
 import s from './ProfileInfo.module.css'
 import Preloader from '../../common/Preloader/Preloader';
-import ProfileStatus from './ProfileStatus';
 import ProfileStatusWithHooks from './ProfileStatusWithHooks';
 
-const ProfileInfo = (props) => {
-    if (!props.profile) {
+const ProfileInfo = ({profile, status, updateStatus}) => {
+    if (!profile) {
         return <Preloader />
     }
     return (
-        <div>
-            {/* <div className={s.profile_info_img_block}>
-                <img src="https://helpx.adobe.com/content/dam/help/en/stock/how-to/visual-reverse-image-search/jcr_content/main-pars/image/visual-reverse-image-search-v2_intro.jpg"
-                    alt="" />
-            </div> */}
+        <div className="ProfileInfo">
             <div className={s.description_block}>
-                <img src={props.profile.photos.large} alt=""/>
-                <ProfileStatusWithHooks status={props.status} updateStatus={props.updateStatus}/>
-                <div><p>{props.profile.fullName}</p></div>
-                <div>{props.profile.aboutMe}</div>
-                <div><a href={`https://${props.profile.contacts.facebook}`}>facebook</a></div>
-                <div>looking for job: {props.profile.lookingForAJob ? "+" : "-"}</div>
+                <img src={profile.photos.large} alt=""/>
+                <ProfileStatusWithHooks status={status} updateStatus={updateStatus}/>
+                <div><p>{profile.fullName}</p></div>
+                <div>{profile.aboutMe}</div>
+                <div><a href={`https://${profile.contacts.facebook}`}>facebook</a></div>
+                <div>looking for job: {profile.lookingForAJob ? "+" : "-"}</div>
             </div>
         </div>
     );
