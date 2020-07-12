@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Route, HashRouter, withRouter } from 'react-router-dom';
+import { connect, Provider } from 'react-redux';
 import { initializeApp } from './redux/appReducer';
 
 import './App.css';
@@ -13,6 +13,8 @@ import UsersContainer from './components/Users/UsersContainer';
 import HeaderContainer from './components/Header/HeaderContainer';
 import Preloader from './components/common/Preloader/Preloader';
 import { withSuspense } from './hoc/withSuspense';
+import store from './redux/redux-store';
+import { compose } from 'redux';
 
 const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
@@ -47,4 +49,16 @@ const mapStateToProps = (state) => ({
   initialized: state.app.initialized,
 });
 
-export default connect(mapStateToProps, {initializeApp})(App);
+const AppContainer = compose(
+  withRouter,
+  connect(mapStateToProps, {initializeApp}))(App);
+
+const MainApp = () => {
+  return <HashRouter>
+    <Provider store={store}>
+      <AppContainer />
+    </Provider>
+  </HashRouter>
+}
+
+export default MainApp;
