@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, HashRouter, withRouter } from 'react-router-dom';
+import { Route, BrowserRouter, withRouter, Switch, Redirect } from 'react-router-dom'; // need HashRouter for gitgub pages
 import { connect, Provider } from 'react-redux';
 import { initializeApp } from './redux/appReducer';
 
@@ -32,13 +32,17 @@ class App extends React.Component {
         <HeaderContainer />
         <Navbar />
         <div className="app_wrapper_content">
-          <Route path='/dialogs' render={ withSuspense(DialogsContainer) } />
-          <Route path='/profile/:userId?' render={ withSuspense(ProfileContainer)} />
-          <Route path='/news' render={ () => <News/> }/>
-          <Route path='/music' render={ () => <Music/> }/>
-          <Route path='/users' render={ () => <UsersContainer /> }/>
-          <Route path='/settings' render={ () => <Settings/> }/>
-          <Route path='/login' render={ () => <Login /> }/>
+          <Switch>
+            <Redirect exact from="/" to="/profile" />
+            <Route path='/dialogs' render={ withSuspense(DialogsContainer) } />
+            <Route path='/profile/:userId?' render={ withSuspense(ProfileContainer)} />
+            <Route path='/news' render={ () => <News/> }/>
+            <Route path='/music' render={ () => <Music/> }/>
+            <Route path='/users' render={ () => <UsersContainer /> }/>
+            <Route path='/settings' render={ () => <Settings/> }/>
+            <Route path='/login' render={ () => <Login /> }/>
+            <Route path='*' render={ () => <div>404 page not found</div> }/>
+          </Switch>
         </div>
       </div>
     );
@@ -54,11 +58,11 @@ const AppContainer = compose(
   connect(mapStateToProps, {initializeApp}))(App);
 
 const MainApp = () => {
-  return <HashRouter>
+  return <BrowserRouter>
     <Provider store={store}>
       <AppContainer />
     </Provider>
-  </HashRouter>
+  </BrowserRouter>
 }
 
 export default MainApp;
