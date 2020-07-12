@@ -28,31 +28,34 @@ export const usersAPI = {
 
 export const authAPI = {
     me() {
-        return instance
-            .get(`auth/me`)
+        return instance.get(`auth/me`)
     },
     login(email, password, rememberMe = false) {
-        return instance
-            .post(`auth/login`, {email, password, rememberMe})
+        return instance.post(`auth/login`, {email, password, rememberMe})
     },
     logout() {
-        return instance
-            .delete(`auth/login`)
+        return instance.delete(`auth/login`)
     }
 }
 
 export const profileAPI = {
     getUserProfile(id) {
-        return instance
-            .get(`profile/${id}`)
+        return instance.get(`profile/${id}`)
             .then(response => response.data)
     },
     getStatus(userId) {
-        return instance
-        .get(`profile/status/${userId}`)
+        return instance.get(`profile/status/${userId}`)
     },
     updateStatus(status) {
-        return instance
-            .put(`profile/status`, {status: status})
+        return instance.put(`profile/status`, {status: status})
+    },
+    savePhoto(file) {
+        const formData = new FormData();
+        formData.append("image", file)
+        return instance.put(`/profile/photo`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
     }
 }
