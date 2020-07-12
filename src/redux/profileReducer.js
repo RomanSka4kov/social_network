@@ -1,4 +1,5 @@
 import { profileAPI } from "../api/api";
+import { stopSubmit } from "redux-form";
 
 const ADD_POST = 'profile/ADD_POST';
 const DELETE_POST = 'profile/DELETE_POST';
@@ -6,7 +7,7 @@ const SET_USER_PROFILE = 'profile/SET_USER_PROFILE';
 const SET_STATUS = 'profile/SET_STATUS';
 const SAVE_PHOTO_SUCCESS = 'profile/SAVE_PHOTO_SUCCESS';
 
-let initialState = {
+const initialState = {
     posts: [
         {id: 1, message: 'It\'s my first post', likesCount: '11'},
         {id: 2, message: 'My too', likesCount: '12'},
@@ -20,14 +21,14 @@ let initialState = {
 const profileReducer = (state = initialState, action) => {
     switch(action.type) {
         case ADD_POST: {
-            let addnewPost = {
+            const addNewPost = {
                 id: 5,
                 message: action.newPost,
                 likesCount: '6555'
             };
             return {
                 ...state,
-                posts: [...state.posts, addnewPost]
+                posts: [...state.posts, addNewPost]
             };
         }
         case SET_USER_PROFILE: {
@@ -71,7 +72,7 @@ export const getStatus = (userId) => async (dispatch) => {
 }
 
 export const updateStatus = (status) => async (dispatch) => {
-    const response = profileAPI.updateStatus(status);
+    const response = await profileAPI.updateStatus(status);
     
     if (response.data.resultCode === 0) {
         dispatch(setStatus(status));
@@ -83,6 +84,18 @@ export const savePhoto = (file) => async (dispatch) => {
     
     if (response.data.resultCode === 0) {
         dispatch(savePhotoSuccess(response.data.data.photos));
+    }
+}
+
+export const saveProfile = (profile) => async (dispatch, getState) => {
+    const userId = getState().auth.userId;
+    const response = await profileAPI.saveProfile(profile);
+    
+    if (response.data.resultCode === 0) {
+        dispatch(userProfile(userId));
+    } else {
+        dispatch(stopSubmit("editProfile", {_error: response.data.messages[0]}));
+        return Promise.reject(response.data.messages[0]);
     }
 }
 
