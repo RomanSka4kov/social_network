@@ -1,4 +1,22 @@
-import * as axios from 'axios';
+import axios from 'axios';
+import { ProfileType } from '../types/types';
+
+export enum ResponseCodeEnum {
+    Success = 0,
+    Error = 1,
+    CaptchaIsRequired = 10
+}
+
+type MeResponseType = {
+    data: { id: number, email: string, login: string },
+    resultCode: ResponseCodeEnum,
+    messages: Array<string>
+}
+type LoginResponseType = {
+    data: { UserId: number },
+    resultCode: ResponseCodeEnum,
+    messages: Array<string>
+}
 
 const instance = axios.create({
     withCredentials: true,
@@ -14,12 +32,12 @@ export const usersAPI = {
             .get(`users?page=${currentPage}&count=${pageSize}`)
             .then(response => response.data)
     },
-    follow(id) {
+    follow(id: number) {
         return instance
             .post(`follow/${id}`)
             .then(response => response.data)
     },
-    unfollow(id) {
+    unfollow(id: number) {
         return instance
             .delete(`follow/${id}`)
             .then(response => response.data)
@@ -28,10 +46,11 @@ export const usersAPI = {
 
 export const authAPI = {
     me() {
-        return instance.get(`auth/me`)
+        return instance.get<MeResponseType>(`auth/me`).then(res => res.data)
     },
-    login(email, password, rememberMe = false, captcha = null) {
-        return instance.post(`auth/login`, {email, password, rememberMe, captcha})
+    login(email: string, password: string, rememberMe = false, captcha: string | null = null) {
+        return instance.post<LoginResponseType>(`auth/login`, {email, password, rememberMe, captcha})
+            .then(res => res.data);
     },
     logout() {
         return instance.delete(`auth/login`)
@@ -39,17 +58,17 @@ export const authAPI = {
 }
 
 export const profileAPI = {
-    getUserProfile(id) {
+    getUserProfile(id: number) {
         return instance.get(`profile/${id}`)
             .then(response => response.data)
     },
-    getStatus(userId) {
+    getStatus(userId: number) {
         return instance.get(`profile/status/${userId}`)
     },
-    updateStatus(status) {
+    updateStatus(status: string) {
         return instance.put(`profile/status`, {status: status})
     },
-    savePhoto(file) {
+    savePhoto(file: any) {
         const formData = new FormData();
         formData.append("image", file)
         return instance.put(`profile/photo`, formData, {
@@ -58,7 +77,7 @@ export const profileAPI = {
                 }
             });
     },
-    saveProfile(profile) {
+    saveProfile(profile: ProfileType) {
         return instance.put(`profile`, profile);
     }
 }
